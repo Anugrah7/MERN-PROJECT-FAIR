@@ -8,9 +8,6 @@ import Auth from './Pages/Auth';
 import Footer from './Components/Footer';
 import Pnf from './Pages/Pnf';
 
-
-
-
 function App() {
   
 

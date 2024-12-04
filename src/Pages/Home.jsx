@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import landingImage from '../assets/home-project-fair.png'
 import ProjectCard from '../Components/ProjectCard'
@@ -7,6 +7,18 @@ import { Button, Card } from 'react-bootstrap'
 
 
 const Home = () => {
+
+  const [isLogin,setIsLogin] = useState(false)
+
+  useEffect(()=>{
+    if(sessionStorage.getItem("token")){
+      setIsLogin(true)
+    }else{
+      setIsLogin(false)
+    }
+  },[])
+
+
   return (
     <>
     {/* Landing */}
@@ -17,7 +29,12 @@ const Home = () => {
               <h1 style={{fontSize:'80px'}} ><i className='fa-brands fa-docker'></i> Project Fair</h1>
               <p style={{textAlign:'justify'}}>One Stop Destination for all Software Development Projects. Where User can add and manage their projects. As well as access all projects available in our website... What are you waiting for!!!
               STARTS TO EXPLORE</p>
-              <Link to={'/login'} className="btn btn-primary">STARTS TO EXPLORE</Link>
+              { 
+              isLogin ?
+                <Link to={'/dashboard'} className="btn btn-success">MANAGE YOUR PROJECTS</Link>
+                :
+                <Link to={'/login'} className="btn btn-primary">STARTS TO EXPLORE</Link>
+                }
             </div>
             <div className="col-lg-6">
               <img className='img-fluid' src={landingImage} alt="" />
