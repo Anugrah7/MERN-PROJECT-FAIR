@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Modal,Button } from 'react-bootstrap'
 import upload from '../assets/upload.png'
+import { addProjectAPI } from '../Services/allAPI'
 
 
 const Add = () => {
@@ -8,7 +9,7 @@ const Add = () => {
   const [preview,setPreview] = useState("")
   const [uploadFileStatus,setUploadFileStatus] = useState(false)
 
-  const [projectDetails,setProjectDetails] = useState({title:"",language:"",overview:"",github:"",website:"",projectImage:""})
+  const [projectDetails,setProjectDetails] = useState({title:"",languages:"",overview:"",github:"",website:"",projectImage:""})
   console.log(projectDetails);
   
 
@@ -29,9 +30,51 @@ const Add = () => {
     setShow(false);
     setPreview("")
     setUploadFileStatus(false)
-    setProjectDetails({title:"",language:"",overview:"",github:"",website:"",projectImage:""})
+    setProjectDetails({title:"",languages:"",overview:"",github:"",website:"",projectImage:""})
   }
   const handleShow = () => setShow(true);
+
+  const handleAddProject = async ()=>{
+    const {title,languages,overview,github,website,projectImage} = projectDetails
+    if(title && languages && overview && github && website && projectImage){
+      // api call 
+      const reqBody = new FormData()
+      reqBody.append("title",title)
+      reqBody.append("languages",languages)
+      reqBody.append("overview",overview)
+      reqBody.append("github",github)
+      reqBody.append("website",website)
+      reqBody.append("projectImage",projectImage)
+
+      const token = sessionStorage.getItem("token")
+      if(token){
+        const reqHeader = {
+          "Content-Type" : "multipart/form-data",
+          "Authorization":`Bearer ${token}` 
+        }
+        //make api call
+        try{
+          const result = await addProjectAPI(reqBody,reqHeader)
+          console.log(result);
+          if(result.status == 200){
+            alert(`${result?.data?.title}Project uploaded successfully`)
+            handleClose()
+          }
+          else{
+            if(result.response.status == 406){
+              alert(result.response.data)
+            }
+
+          }
+        }catch(err){
+          console.log(err);
+          
+        }
+      }
+    }else {
+      alert("Please Fill the form Completely ")
+    }
+  }
 
   return (
     <>
@@ -56,7 +99,7 @@ const Add = () => {
                 <input onChange={(e)=>setProjectDetails({...projectDetails,title:e.target.value})} type="text" className='form-control' placeholder='Project Title' value={projectDetails.title} />
               </div>
               <div className="mb-2">
-                <input value={projectDetails.language} onChange={(e)=>setProjectDetails({...projectDetails,language:e.target.value})} type="text" className='form-control' placeholder='Project Languages' />
+                <input value={projectDetails.languages} onChange={(e)=>setProjectDetails({...projectDetails,languages:e.target.value})} type="text" className='form-control' placeholder='Project Languages' />
               </div>
               <div className="mb-2">
                 <input type="text" value={projectDetails.overview} onChange={(e)=>setProjectDetails({...projectDetails,overview:e.target.value})} className='form-control' placeholder='Project Overiew' />
@@ -74,7 +117,7 @@ const Add = () => {
           <Button variant="danger text-dark" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="success text-dark">Add</Button>
+          <Button onClick={handleAddProject} variant="success text-dark">Add</Button>
         </Modal.Footer>
       </Modal>
     </>
