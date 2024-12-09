@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import landingImage from '../assets/home-project-fair.png'
 import ProjectCard from '../Components/ProjectCard'
 import { Button, Card } from 'react-bootstrap'
@@ -9,6 +9,8 @@ import { homeProjectAPI } from '../Services/allAPI'
 
 const Home = () => {
 
+
+  const navigate = useNavigate()
   const [homeProjects,setHomeProjects] = useState([])
   const [isLogin,setIsLogin] = useState(false)
 
@@ -36,6 +38,17 @@ const Home = () => {
     }catch(err){
       console.log(err);
       
+    }
+  }
+
+  const handleNavigateToProjects = ()=>{
+    //use is loged in ?
+    if(sessionStorage.getItem("token")){
+      //authorized user then redirect 
+      navigate('/projects')
+    }else{
+      // not an authorized user
+      alert("Please login to fet full acess to our Project collection")
     }
   }
 
@@ -79,7 +92,7 @@ const Home = () => {
             }
           </div>
         </marquee>
-        <button className='btn btn-link mt-5'>Click Here to View More Projects</button>
+        <button onClick={handleNavigateToProjects} className='btn btn-link mt-5'>Click Here to View More Projects</button>
       </div>
 
       {/* Our Testimonials */}
