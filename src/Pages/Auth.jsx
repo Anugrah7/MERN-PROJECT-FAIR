@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import LoginImg from '../assets/login-project-fair.png'
 import { FloatingLabel, Form, Spinner } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginAPI, registerAPI } from '../Services/allAPI';
+import { tokenContext } from '../context/TokenAuth';
 
 
 
 const Auth = ({insideRegister}) => {
-
+  const {authorizedUser,setAuthorizedUser} =  useContext(tokenContext)
   const [isLogin , setIsLogin] = useState(false)
   const navigate = useNavigate()
   const [userInput,setUserInput] = useState({
@@ -55,6 +56,7 @@ const login = async (e)=>{
         sessionStorage.setItem("user",JSON.stringify(result.data.user))
         sessionStorage.setItem("token",result.data.token)
         setIsLogin(true)
+        setAuthorizedUser(true)
         setTimeout(()=>{
           navigate('/')
         setUserInput({username:"",email:"",password:""})

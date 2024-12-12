@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Add from './Add'
 import Edit from './Edit'
-import { userProjectAPI } from '../Services/allAPI'
-import { addProjectContext } from '../context/ContextShare'
+import { deleteProjectAPI, userProjectAPI } from '../Services/allAPI'
+import { addProjectContext, editProjectContext } from '../context/ContextShare'
 
 const View = () => {
 
+const {editProjectResponse,setEditProjectResponse} = useContext(editProjectContext)
 const {addProjectResponse,setAddProjectResponse} = useContext(addProjectContext)
 //to display user project
 //1.Create a state to store user Projects 
@@ -15,7 +16,7 @@ console.log(userProjects);
 
 useEffect(()=>{
     getUserProject()
-},[addProjectResponse])
+},[addProjectResponse,editProjectResponse])
 //2.Create a function for getting all user project and call api inside that function all user projects inside the state
 
 const getUserProject = async ()=>{
@@ -41,6 +42,24 @@ const getUserProject = async ()=>{
 }
 //3.call that user Project getting function using useEffect
 
+
+//
+    const removeProject = async (id)=>{
+        const token = sessionStorage.getItem("token")
+      if(token){
+        const reqHeader = {
+          "Authorization":`Bearer ${token}` 
+        }
+        try{
+            const result = await deleteProjectAPI(id,reqHeader)
+            if(result.status==200){
+                getUserProject()
+            }
+        }catch(err){
+            console.log(err);
+        }
+        } 
+}
   return (
     <>
     <div className="d-flex justify-content-between mt-3">
@@ -61,7 +80,7 @@ const getUserProject = async ()=>{
                      <Edit project={project}/>  
                 </div>
                 <button className='btn'> <a href={project?.github} target='_blank'><i className='fa-brands fa-github'></i></a></button>
-                <button className='btn'><i className='fa-solid fa-trash text-danger'></i></button>
+                <button onClick={()=>removeProject(project?._id)} className='btn'><i className='fa-solid fa-trash text-danger'></i></button>
 
             </div>
         </div>
