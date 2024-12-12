@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Navbar,Container } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
+import { tokenContext } from '../context/TokenAuth'
+
 
 const Header = ({insideDashboard}) => {
   const {authorizedUser,setAuthorizedUser} =  useContext(tokenContext)
