@@ -1,4 +1,4 @@
-import commonAPI from "./commonAPI.JS";
+import commonAPI from "./commonAPI.js";
 import SERVER_BASE_URL from "./serverUrl";
 
 //registerAPI
